@@ -167,6 +167,45 @@ bool Capture::capture()
   return false;
 }
 
+bool Capture::capture(ros::Time stamp)
+{
+  if (cap_.read(bridge_.image))
+  {
+    bridge_.encoding = enc::BGR8;
+    bridge_.header.stamp = stamp;
+    bridge_.header.frame_id = frame_id_;
+
+    info_ = info_manager_.getCameraInfo();
+    if (info_.height == 0 && info_.width == 0)
+    {
+      info_.height = bridge_.image.rows;
+      info_.width = bridge_.image.cols;
+    }
+    else if (info_.height != bridge_.image.rows || info_.width != bridge_.image.cols)
+    {
+      if (rescale_camera_info_)
+      {
+        int old_width = info_.width;
+        int old_height = info_.height;
+        rescaleCameraInfo(bridge_.image.cols, bridge_.image.rows);
+        ROS_INFO_ONCE("Camera calibration automatically rescaled from %dx%d to %dx%d",
+                      old_width, old_height, bridge_.image.cols, bridge_.image.rows);
+      }
+      else
+      {
+        ROS_WARN_ONCE("Calibration resolution %dx%d does not match camera resolution %dx%d. "
+                      "Use rescale_camera_info param for rescaling",
+                      info_.width, info_.height, bridge_.image.cols, bridge_.image.rows);
+      }
+    }
+    info_.header.stamp = stamp;
+    info_.header.frame_id = frame_id_;
+
+    return true;
+  }
+  return false;
+}
+
 void Capture::publish()
 {
   pub_.publish(*getImageMsgPtr(), info_);

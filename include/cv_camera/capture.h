@@ -85,6 +85,15 @@ public:
    * @return true if success to capture, false if not captured.
    */
   bool capture();
+  
+  /**
+   * @brief capture an image and store with stamp predefined.
+   *
+   * to publish the captured image, call publish();
+   * @return true if success to capture, false if not captured.
+   */
+  bool capture(ros::Time stamp);
+
 
   /**
    * @brief Publish the image that is already captured by capture().

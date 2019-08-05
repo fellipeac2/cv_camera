@@ -6,5 +6,11 @@
       OpenCV camera driver nodelet.
     </description>
   </class>
+  <class name="cv_camera/CvCameraStereoNodelet"
+	 type="cv_camera::CvCameraStereoNodelet" base_class_type="nodelet::Nodelet">
+    <description>
+      OpenCV camera stereo driver nodelet.
+    </description>
+  </class>
 
 </library>

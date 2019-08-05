@@ -25,13 +25,16 @@ include_directories(
 
 ## Declare a cpp library
 add_library(cv_camera src/capture.cpp src/driver.cpp)
+add_library(cv_camera_stereo src/capture.cpp src/driver_stereo.cpp)
 add_library(cv_camera_nodelet src/cv_camera_nodelet.cpp)
+add_library(cv_camera_stereo_nodelet src/cv_camera_stereo_nodelet.cpp)
 
 
 ## Declare a cpp executable
 add_executable(cv_camera_node src/cv_camera_node.cpp)
 add_dependencies(cv_camera_node cv_camera)
 add_dependencies(cv_camera_nodelet cv_camera)
+add_dependencies(cv_camera_stereo_nodelet cv_camera_stereo)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(cv_camera
@@ -42,6 +45,10 @@ target_link_libraries(cv_camera
 target_link_libraries(cv_camera_nodelet
   ${catkin_LIBRARIES}
   cv_camera
+  )
+target_link_libraries(cv_camera_stereo_nodelet
+  ${catkin_LIBRARIES}
+  cv_camera_stereo
   )
 
 target_link_libraries(cv_camera_node
@@ -61,7 +68,7 @@ target_link_libraries(cv_camera_node
 # )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS cv_camera cv_camera_nodelet cv_camera_node
+install(TARGETS cv_camera cv_camera_nodelet cv_camera_stereo_nodelet cv_camera_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -82,7 +89,7 @@ install(FILES cv_camera_nodelets.xml
 #############
 
 roslint_cpp(
-  src/capture.cpp src/cv_camera_node.cpp src/cv_camera_nodelet.cpp src/driver.cpp
+  src/capture.cpp src/cv_camera_node.cpp src/cv_camera_nodelet.cpp src/driver.cpp src/cv_camera_stereo_nodelet.cpp src/driver_stereo.cpp
   )
 
 if (CATKIN_ENABLE_TESTING)
