@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+	<arg name="manager" default="camera_manager" />
+	<arg name="node_name" default="camera" />
+	<node pkg="nodelet" type="nodelet" name="$(arg node_name)" args="load cv_camera/cv_camera_stereo_nodelet $(arg manager)" output="screen">
+	</node>
+</launch>
