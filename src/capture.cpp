@@ -129,12 +129,15 @@ void Capture::openFile(const std::string &file_path)
 
 bool Capture::capture()
 {
-  if (cap_.read(bridge_.image))
+  if (cap_.read(bridge_flip_.image))
   {
+    flip(bridge_flip_.image, bridge_.image, -1);
     ros::Time stamp = ros::Time::now() - capture_delay_;
     bridge_.encoding = enc::BGR8;
     bridge_.header.stamp = stamp;
     bridge_.header.frame_id = frame_id_;
+
+    bridge_.image = bridge_.image.rowRange(bridge_.image.rows/3, bridge_.image.rows);
 
     info_ = info_manager_.getCameraInfo();
     if (info_.height == 0 && info_.width == 0)
