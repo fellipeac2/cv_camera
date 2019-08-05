@@ -1,4 +1,4 @@
-ROS OpenCV camera driver
+ROS OpenCV camera driver with stereo publisher
 ========================
 
 It is very easy to capture video device if we use `cv::VideoCapture` of OpenCV.
