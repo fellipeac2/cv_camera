@@ -41,6 +41,11 @@ target_link_libraries(cv_camera
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
   )
+target_link_libraries(cv_camera_stereo
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
+  cv_camera
+  )
 
 target_link_libraries(cv_camera_nodelet
   ${catkin_LIBRARIES}
@@ -68,20 +73,20 @@ target_link_libraries(cv_camera_node
 # )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS cv_camera cv_camera_nodelet cv_camera_stereo_nodelet cv_camera_node
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-  )
-
-install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  )
-
-# add xml file
-install(FILES cv_camera_nodelets.xml
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-  )
+#install(TARGETS cv_camera cv_camera_nodelet cv_camera_stereo_nodelet cv_camera_node
+#  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+#  )
+#
+#install(DIRECTORY include/${PROJECT_NAME}/
+#  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+#  )
+#
+## add xml file
+#install(FILES cv_camera_nodelets.xml
+#  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+#  )
 
 
 #############
