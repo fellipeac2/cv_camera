@@ -135,8 +135,12 @@ bool Capture::capture()
 
 bool Capture::capture(ros::Time stamp)
 {
-  if (cap_.read(bridge_.image))
-  {
+  cv::Mat image_flipped;
+  if (cap_.read(image_flipped))
+  { 
+    cv::flip(image_flipped, bridge_.image, -1);
+
+
     bridge_.encoding = enc::BGR8;
     bridge_.header.stamp = stamp;
     bridge_.header.frame_id = frame_id_;
