@@ -16,7 +16,7 @@ Capture::Capture(ros::NodeHandle &node, const std::string &topic_name,
       topic_name_(topic_name),
       buffer_size_(buffer_size),
       frame_id_(frame_id),
-      info_manager_(node_, frame_id),
+      info_manager_(node_, topic_name),
       capture_delay_(ros::Duration(node_.param("capture_delay", 0.0)))
 {
 }

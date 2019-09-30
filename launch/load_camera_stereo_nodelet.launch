@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<launch>
+	<arg name="manager" default="camera_stereo_manager" />
+	<node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
+	<include file="$(find cv_camera)/launch/camera_stereo_nodelet.launch">
+		<arg name="manager" value="$(arg manager)" />
+	</include>
+</launch>

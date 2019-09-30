@@ -2,6 +2,11 @@
 <launch>
 	<arg name="manager" default="camera_manager" />
 	<arg name="node_name" default="camera" />
-	<node pkg="nodelet" type="nodelet" name="$(arg node_name)" args="load cv_camera/cv_camera_stereo_nodelet $(arg manager)" output="screen">
+	<node pkg="nodelet" type="nodelet" name="$(arg node_name)" args="load cv_camera/CvCameraStereoNodelet $(arg manager)" output="screen">
+		<param name="device_id_left" value="0"/>
+                <param name="device_id_right" value="1"/>
+                <param name="frame_id_left" value="camera_left_link" />
+                <param name="frame_id_right" value="camera_right_link" />
+                <param name="rate" value="30" />
 	</node>
 </launch>

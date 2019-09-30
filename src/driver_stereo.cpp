@@ -40,7 +40,7 @@ namespace cv_camera
 		int32_t image_width(640);
 		int32_t image_height(480);
 
-		camera_left_.reset(new Capture(camera_node_, "image_left_raw", PUBLISHER_BUFFER_SIZE, frame_id_left));
+		camera_left_.reset(new Capture(camera_node_, "left", PUBLISHER_BUFFER_SIZE, frame_id_left));
 
 		if (private_node_.getParam("file_left", file_path_left) && file_path_left != "")
 		{
@@ -55,7 +55,7 @@ namespace cv_camera
 			camera_left_->open(device_id_left);
 		}
 
-		camera_right_.reset(new Capture(camera_node_, "image_right_raw", PUBLISHER_BUFFER_SIZE, frame_id_right));
+		camera_right_.reset(new Capture(camera_node_, "right", PUBLISHER_BUFFER_SIZE, frame_id_right));
 
 		if (private_node_.getParam("file_right", file_path_right) && file_path_right != "")
 		{
