@@ -2,20 +2,26 @@ cmake_minimum_required(VERSION 2.8.3)
 project(cv_camera)
 
 find_package(catkin REQUIRED COMPONENTS
-  image_transport roscpp cv_bridge sensor_msgs nodelet camera_info_manager roslint)
+  image_transport roscpp cv_bridge sensor_msgs nodelet camera_info_manager roslint dynamic_reconfigure)
 
 find_package(OpenCV REQUIRED)
 
 find_package(Boost REQUIRED COMPONENTS system thread)
+
+generate_dynamic_reconfigure_options(
+	cfg/Tutorials.cfg
+	cfg/CvCamera.cfg
+	)
 
 roslint_cpp()
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES cv_camera
-  CATKIN_DEPENDS image_transport roscpp cv_bridge sensor_msgs nodelet camera_info_manager
+  CATKIN_DEPENDS image_transport roscpp cv_bridge sensor_msgs nodelet camera_info_manager dynamic_reconfigure
   DEPENDS OpenCV
   )
+
 
 include_directories(
   include
@@ -32,6 +38,8 @@ add_library(cv_camera_stereo_nodelet src/cv_camera_stereo_nodelet.cpp)
 
 ## Declare a cpp executable
 add_executable(cv_camera_node src/cv_camera_node.cpp)
+add_dependencies(cv_camera_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${PROJECT_NAME}_gencfg)
+
 add_dependencies(cv_camera_node cv_camera)
 add_dependencies(cv_camera_nodelet cv_camera)
 add_dependencies(cv_camera_stereo_nodelet cv_camera_stereo)
@@ -61,6 +69,7 @@ target_link_libraries(cv_camera_node
   cv_camera
   )
 
+add_dependencies(cv_camera_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${PROJECT_NAME}_gencfg)
 #############
 ## Install ##
 #############

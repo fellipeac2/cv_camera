@@ -13,6 +13,14 @@ namespace cv_camera
 		: private_node_(private_node),
 		camera_node_(camera_node)
 	{
+
+  		//dynamic_reconfigure::Server<cv_camera::CvCameraConfig>::CallbackType f;
+		//f = boost::bind(&DriverStereo::callbackDR, this, _1, _2);
+		//dynRecServer.setCallback(f);
+	}
+
+	void DriverStereo::callbackDR(const cv_camera::CvCameraConfig & config, uint32_t level) {
+		ROS_INFO("Level: %d, value: %f", (int) level, config.cv_cap_prop_gain);
 	}
 
 	void DriverStereo::setup()

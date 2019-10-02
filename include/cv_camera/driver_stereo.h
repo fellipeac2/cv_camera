@@ -4,6 +4,8 @@
 #define CV_CAMERA_DRIVER_STEREO_H
 
 #include "cv_camera/capture.h"
+#include <dynamic_reconfigure/server.h>
+#include <cv_camera/CvCameraConfig.h>
 
 namespace cv_camera
 {
@@ -28,6 +30,8 @@ class DriverStereo
   DriverStereo(ros::NodeHandle& private_node,
          ros::NodeHandle& camera_node);
   ~DriverStereo();
+
+  void callbackDR(const cv_camera::CvCameraConfig & config, uint32_t level);
 
   /**
    * @brief Setup camera device and ROS parameters.
@@ -58,6 +62,8 @@ class DriverStereo
    * @brief publishing rate.
    */
   boost::shared_ptr<ros::Rate> rate_;
+
+  dynamic_reconfigure::Server<cv_camera::CvCameraConfig> dynRecServer;
 };
 
 }  // namespace cv_camera

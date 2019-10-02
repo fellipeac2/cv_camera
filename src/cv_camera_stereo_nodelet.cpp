@@ -51,6 +51,7 @@ private:
    */
   void main()
   {
+      NODELET_ERROR_STREAM("fadsfadfasdfasdf ");
     while (is_running_)
     {
       driver_stereo_->proceed();
