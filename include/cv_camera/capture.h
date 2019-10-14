@@ -40,6 +40,12 @@ public:
           int32_t buffer_size,
           const std::string &frame_id);
 
+  Capture(ros::NodeHandle &node,
+          const std::string &topic_name,
+          int32_t buffer_size,
+          const std::string &frame_id,
+          const std::string &frame_id_left,
+          const std::string &frame_id_right);
   /**
    * @brief Open capture device with device ID.
    *
@@ -94,12 +100,23 @@ public:
    */
   bool capture(ros::Time stamp);
 
+  /**
+   * @brief split image in two.
+   */
+  void split();
+
 
   /**
    * @brief Publish the image that is already captured by capture().
    *
    */
   void publish();
+
+  /**
+   * @brief Publish the image that is already captured by capture().
+   *
+   */
+  void publish_pair();
 
   /**
    * @brief accessor of CameraInfo.
@@ -124,7 +141,30 @@ public:
   {
     return bridge_.image;
   }
+  
+  /**
+   * @brief accessor of ROS Image message.
+   *
+   * you have to call capture() before call this.
+   *
+   * @return message pointer.
+   */
+  inline const sensor_msgs::ImagePtr getImageRightMsgPtr() const
+  {
+    return bridge_right_.toImageMsg();
+  }
 
+  /**
+   * @brief accessor of ROS Image message.
+   *
+   * you have to call capture() before call this.
+   *
+   * @return message pointer.
+   */
+  inline const sensor_msgs::ImagePtr getImageLeftMsgPtr() const
+  {
+    return bridge_left_.toImageMsg();
+  }
   /**
    * @brief accessor of ROS Image message.
    *
@@ -182,10 +222,16 @@ private:
    */
   std::string topic_name_;
 
+  std::string topic_name_left_;
+  std::string topic_name_right_;
+
   /**
    * @brief header.frame_id for publishing images.
    */
   std::string frame_id_;
+
+  std::string frame_id_left_;
+  std::string frame_id_right_;
   /**
    * @brief size of publisher buffer
    */
@@ -195,6 +241,8 @@ private:
    * @brief image publisher created by image_transport::ImageTransport.
    */
   image_transport::CameraPublisher pub_;
+  image_transport::CameraPublisher pub_left_;
+  image_transport::CameraPublisher pub_right_;
 
   /**
    * @brief capture device.
@@ -205,6 +253,8 @@ private:
    * @brief this stores last captured image.
    */
   cv_bridge::CvImage bridge_;
+  cv_bridge::CvImage bridge_left_;
+  cv_bridge::CvImage bridge_right_;
   cv_bridge::CvImage bridge_flip_;
 
   /**
@@ -213,6 +263,9 @@ private:
    * currently this has image size (width/height) only.
    */
   sensor_msgs::CameraInfo info_;
+
+  sensor_msgs::CameraInfo info_left_;
+  sensor_msgs::CameraInfo info_right_;
 
   /**
    * @brief camera info manager

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="manager" default="camera_manager" />
+  <arg name="node_name" default="camera" />
+  <arg name="device_id" default="0" />
+  <node pkg="nodelet" type="nodelet" name="$(arg node_name)" args="load cv_camera/CvCameraZedNodelet $(arg manager)" output="screen">
+    <param name="device_id" value="$(arg device_id)"/>
+    <param name="frame_id" value="camera_left" />
+    <param name="frame_id_left" value="camera_left_link" />
+    <param name="frame_id_right" value="camera_right_link" />
+    <param name="rate" value="30" />
+  </node>
+</launch>

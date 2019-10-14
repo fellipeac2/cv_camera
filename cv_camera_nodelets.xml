@@ -16,4 +16,13 @@
       OpenCV camera stereo driver nodelet.
     </description>
   </class>
+</library>
+<library path="lib/libcv_camera_zed_nodelet">
+
+  <class name="cv_camera/CvCameraZedNodelet"
+	 type="cv_camera::CvCameraZedNodelet" base_class_type="nodelet::Nodelet">
+    <description>
+      OpenCV camera zed driver nodelet.
+    </description>
+  </class>
   </library>

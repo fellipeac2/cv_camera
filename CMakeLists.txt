@@ -32,8 +32,10 @@ include_directories(
 ## Declare a cpp library
 add_library(cv_camera src/capture.cpp src/driver.cpp)
 add_library(cv_camera_stereo src/capture.cpp src/driver_stereo.cpp)
+add_library(cv_camera_zed src/capture.cpp src/driver_zed.cpp)
 add_library(cv_camera_nodelet src/cv_camera_nodelet.cpp)
 add_library(cv_camera_stereo_nodelet src/cv_camera_stereo_nodelet.cpp)
+add_library(cv_camera_zed_nodelet src/cv_camera_zed_nodelet.cpp)
 
 
 ## Declare a cpp executable
@@ -43,6 +45,7 @@ add_dependencies(cv_camera_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${PROJECT_NA
 add_dependencies(cv_camera_node cv_camera)
 add_dependencies(cv_camera_nodelet cv_camera)
 add_dependencies(cv_camera_stereo_nodelet cv_camera_stereo)
+add_dependencies(cv_camera_zed_nodelet cv_camera_zed)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(cv_camera
@@ -50,6 +53,11 @@ target_link_libraries(cv_camera
   ${OpenCV_LIBS}
   )
 target_link_libraries(cv_camera_stereo
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
+  cv_camera
+  )
+target_link_libraries(cv_camera_zed
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
   cv_camera
@@ -62,6 +70,10 @@ target_link_libraries(cv_camera_nodelet
 target_link_libraries(cv_camera_stereo_nodelet
   ${catkin_LIBRARIES}
   cv_camera_stereo
+  )
+target_link_libraries(cv_camera_zed_nodelet
+  ${catkin_LIBRARIES}
+  cv_camera_zed
   )
 
 target_link_libraries(cv_camera_node

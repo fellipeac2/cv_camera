@@ -21,6 +21,26 @@ Capture::Capture(ros::NodeHandle &node, const std::string &topic_name,
 {
 }
 
+Capture::Capture(ros::NodeHandle &node, const std::string &topic_name,
+                 int32_t buffer_size, const std::string &frame_id, const std::string &frame_id_left, const std::string &frame_id_right)
+    : node_(node),
+      it_(node_),
+      topic_name_(topic_name),
+      buffer_size_(buffer_size),
+      frame_id_(frame_id),
+      frame_id_left_(frame_id_left),
+      frame_id_right_(frame_id_right),
+      info_manager_(node_, topic_name),
+      capture_delay_(ros::Duration(node_.param("capture_delay", 0.0)))
+{
+	std::string left("left/");
+	std::string right("right/");
+	left.append(topic_name);
+	right.append(topic_name);
+	topic_name_left_ = left;
+	topic_name_right_ = right;
+}
+
 void Capture::loadCameraInfo()
 {
   std::string url;
@@ -85,6 +105,8 @@ void Capture::open(int32_t device_id)
     throw DeviceError(stream.str());
   }
   pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
+  pub_left_ = it_.advertiseCamera(topic_name_left_, buffer_size_);
+  pub_right_ = it_.advertiseCamera(topic_name_right_, buffer_size_);
 
   loadCameraInfo();
 }
@@ -97,6 +119,8 @@ void Capture::open(const std::string &device_path)
     throw DeviceError("device_path " + device_path + " cannot be opened");
   }
   pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
+  pub_left_ = it_.advertiseCamera(topic_name_left_, buffer_size_);
+  pub_right_ = it_.advertiseCamera(topic_name_right_, buffer_size_);
 
   loadCameraInfo();
 }
@@ -116,6 +140,8 @@ void Capture::openFile(const std::string &file_path)
     throw DeviceError(stream.str());
   }
   pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
+  pub_left_ = it_.advertiseCamera(topic_name_left_, buffer_size_);
+  pub_right_ = it_.advertiseCamera(topic_name_right_, buffer_size_);
 
   std::string url;
   if (node_.getParam("camera_info_url", url))
@@ -125,6 +151,33 @@ void Capture::openFile(const std::string &file_path)
       info_manager_.loadCameraInfo(url);
     }
   }
+}
+
+void Capture::split() {
+    bridge_left_.encoding = bridge_.encoding;
+    bridge_left_.header.stamp = bridge_.header.stamp;
+    bridge_left_.header.frame_id = frame_id_left_;
+
+    bridge_right_.encoding = bridge_.encoding;
+    bridge_right_.header.stamp = bridge_.header.stamp;
+    bridge_right_.header.frame_id = frame_id_right_;
+
+    info_left_.height = info_.height;
+    info_left_.width = info_.width / 2;
+    info_left_.header.stamp = info_.header.stamp;
+    info_left_.header.frame_id = frame_id_left_;
+	
+    info_right_.height = info_.height;
+    info_right_.width = info_.width / 2;
+    info_right_.header.stamp = info_.header.stamp;
+    info_right_.header.frame_id = frame_id_right_;
+
+
+    cv::Rect left_rect(0, 0, info_.width / 2, info_.height);
+    cv::Rect right_rect(info_.width / 2, 0, info_.width / 2, info_.height);
+
+    bridge_left_.image = bridge_.image(left_rect);
+    bridge_right_.image = bridge_.image(right_rect);
 }
 
 bool Capture::capture()
@@ -139,6 +192,7 @@ bool Capture::capture(ros::Time stamp)
   if (cap_.read(image_flipped))
   { 
     cv::flip(image_flipped, bridge_.image, -1);
+
 
 
     bridge_.encoding = enc::BGR8;
@@ -178,7 +232,13 @@ bool Capture::capture(ros::Time stamp)
 
 void Capture::publish()
 {
-  pub_.publish(*getImageMsgPtr(), info_);
+	pub_.publish(*getImageMsgPtr(), info_);
+}
+
+void Capture::publish_pair()
+{
+  pub_left_.publish(*getImageLeftMsgPtr(), info_left_);
+  pub_right_.publish(*getImageRightMsgPtr(), info_right_);
 }
 
 bool Capture::setPropertyFromParam(int property_id, const std::string &param_name)
