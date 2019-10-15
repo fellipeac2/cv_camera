@@ -21,10 +21,10 @@ namespace cv_camera
 {
 
 /**
- * @brief captures by cv::VideoCapture and publishes to ROS topic.
+ * @brief captures by cv::VideoCaptureStereo and publishes to ROS topic.
  *
  */
-class Capture
+class CaptureStereo
 {
 public:
   /**
@@ -35,15 +35,11 @@ public:
    * @param buffer_size size of publisher buffer.
    * @param frame_id frame_id of publishing messages.
    */
-  Capture(ros::NodeHandle &node,
-          const std::string &topic_name,
-          int32_t buffer_size,
-          const std::string &frame_id);
 
-  Capture(ros::NodeHandle &node,
-          const std::string &topic_name,
+  CaptureStereo(ros::NodeHandle &node,
+          const std::string &topic_name_left,
+          const std::string &topic_name_right,
           int32_t buffer_size,
-          const std::string &frame_id,
           const std::string &frame_id_left,
           const std::string &frame_id_right);
   /**
@@ -112,11 +108,6 @@ public:
    */
   void publish();
 
-  /**
-   * @brief Publish the image that is already captured by capture().
-   *
-   */
-  void publish_pair();
 
   /**
    * @brief accessor of CameraInfo.
@@ -125,9 +116,20 @@ public:
    *
    * @return CameraInfo
    */
-  inline const sensor_msgs::CameraInfo &getInfo() const
+  inline const sensor_msgs::CameraInfo &getLeftInfo() const
   {
-    return info_;
+    return info_left_;
+  }
+  /**
+   * @brief accessor of CameraInfo.
+   *
+   * you have to call capture() before call this.
+   *
+   * @return CameraInfo
+   */
+  inline const sensor_msgs::CameraInfo &getRightInfo() const
+  {
+    return info_right_;
   }
 
   /**
@@ -137,9 +139,20 @@ public:
    *
    * @return captured cv::Mat
    */
-  inline const cv::Mat &getCvImage() const
+  inline const cv::Mat &getCvLeftImage() const
   {
-    return bridge_.image;
+    return bridge_left_.image;
+  }
+  /**
+   * @brief accessor of cv::Mat
+   *
+   * you have to call capture() before call this.
+   *
+   * @return captured cv::Mat
+   */
+  inline const cv::Mat &getCvRightImage() const
+  {
+    return bridge_right_.image;
   }
   
   /**
@@ -164,17 +177,6 @@ public:
   inline const sensor_msgs::ImagePtr getImageLeftMsgPtr() const
   {
     return bridge_left_.toImageMsg();
-  }
-  /**
-   * @brief accessor of ROS Image message.
-   *
-   * you have to call capture() before call this.
-   *
-   * @return message pointer.
-   */
-  inline const sensor_msgs::ImagePtr getImageMsgPtr() const
-  {
-    return bridge_.toImageMsg();
   }
 
   /**
@@ -220,7 +222,6 @@ private:
   /**
    * @brief name of topic without namespace (usually "image_raw").
    */
-  std::string topic_name_;
 
   std::string topic_name_left_;
   std::string topic_name_right_;
@@ -228,7 +229,6 @@ private:
   /**
    * @brief header.frame_id for publishing images.
    */
-  std::string frame_id_;
 
   std::string frame_id_left_;
   std::string frame_id_right_;
@@ -240,7 +240,6 @@ private:
   /**
    * @brief image publisher created by image_transport::ImageTransport.
    */
-  image_transport::CameraPublisher pub_;
   image_transport::CameraPublisher pub_left_;
   image_transport::CameraPublisher pub_right_;
 
@@ -252,17 +251,14 @@ private:
   /**
    * @brief this stores last captured image.
    */
-  cv_bridge::CvImage bridge_;
   cv_bridge::CvImage bridge_left_;
   cv_bridge::CvImage bridge_right_;
-  cv_bridge::CvImage bridge_flip_;
 
   /**
    * @brief this stores last captured image info.
    *
    * currently this has image size (width/height) only.
    */
-  sensor_msgs::CameraInfo info_;
 
   sensor_msgs::CameraInfo info_left_;
   sensor_msgs::CameraInfo info_right_;
@@ -270,9 +266,8 @@ private:
   /**
    * @brief camera info manager
    */
-  camera_info_manager::CameraInfoManager info_manager_;
-//  camera_info_manager::CameraInfoManager info_manager_left_;
-//  camera_info_manager::CameraInfoManager info_manager_right_;
+  camera_info_manager::CameraInfoManager info_manager_left_;
+  camera_info_manager::CameraInfoManager info_manager_right_;
 
   /**
    * @brief rescale_camera_info param value

@@ -23,11 +23,9 @@ void DriverZed::setup()
   double hz(DEFAULT_RATE);
   int32_t device_id(0);
   std::string device_path("");
-  std::string frame_id("camera");
   std::string file_path("");
 
   private_node_.getParam("device_id", device_id);
-  private_node_.getParam("frame_id", frame_id);
   private_node_.getParam("rate", hz);
 
   std::string frame_id_left("camera_left_link");
@@ -41,10 +39,12 @@ void DriverZed::setup()
 
   ROS_INFO("device_id %d", device_id);
 
-  camera_.reset(new Capture(camera_node_,
-                            "image_raw",
+  camera_.reset(new CaptureStereo(camera_node_,
+                            "left/image_raw",
+                            "right/image_raw",
                             PUBLISHER_BUFFER_SIZE,
-                            frame_id, frame_id_left, frame_id_right));
+                            frame_id_left,
+                            frame_id_right));
 
   if (private_node_.getParam("file", file_path) && file_path != "")
   {
@@ -109,8 +109,7 @@ void DriverZed::proceed()
 {
   if (camera_->capture())
   {
-    camera_->split();
-    camera_->publish_pair();
+    camera_->publish();
   }
   rate_->sleep();
 }

@@ -32,7 +32,7 @@ include_directories(
 ## Declare a cpp library
 add_library(cv_camera src/capture.cpp src/driver.cpp)
 add_library(cv_camera_stereo src/capture.cpp src/driver_stereo.cpp)
-add_library(cv_camera_zed src/capture.cpp src/driver_zed.cpp)
+add_library(cv_camera_zed src/capture_stereo.cpp src/driver_zed.cpp)
 add_library(cv_camera_nodelet src/cv_camera_nodelet.cpp)
 add_library(cv_camera_stereo_nodelet src/cv_camera_stereo_nodelet.cpp)
 add_library(cv_camera_zed_nodelet src/cv_camera_zed_nodelet.cpp)

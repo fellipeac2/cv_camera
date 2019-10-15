@@ -3,7 +3,7 @@
 #ifndef CV_CAMERA_DRIVER_H
 #define CV_CAMERA_DRIVER_H
 
-#include "cv_camera/capture.h"
+#include "cv_camera/capture_stereo.h"
 
 namespace cv_camera
 {
@@ -36,7 +36,7 @@ class DriverZed
    */
   void setup();
   /**
-   * @brief Capture, publish and sleep
+   * @brief CaptureStereo, publish and sleep
    */
   void proceed();
  private:
@@ -49,9 +49,9 @@ class DriverZed
    */
   ros::NodeHandle camera_node_;
   /**
-   * @brief wrapper of cv::VideoCapture.
+   * @brief wrapper of cv::VideoCaptureStereo.
    */
-  boost::shared_ptr<Capture> camera_;
+  boost::shared_ptr<CaptureStereo> camera_;
 
   /**
    * @brief publishing rate.
